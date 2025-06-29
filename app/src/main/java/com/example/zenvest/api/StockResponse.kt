@@ -4,13 +4,25 @@ package com.example.zenvest.api
 import com.google.gson.annotations.SerializedName
 
 data class StockResponse(
-    @SerializedName("Time Series (1min)")
-    val timeSeries: Map<String, StockData>
+    @SerializedName("Meta Data") val metaData: MetaData,
+    @SerializedName("Time Series (5min)") val timeSeries: Map<String, StockData>
 )
 
 data class StockData(
-    @SerializedName("1. open")
-    val open: String
+    @SerializedName("1. open") val open: String,
+    @SerializedName("2. high") val high: String,
+    @SerializedName("3. low") val low: String,
+    @SerializedName("4. close") val close: String,
+    @SerializedName("5. volume") val volume: String
+)
+
+data class MetaData(
+    @SerializedName("1. Information") val information: String,
+    @SerializedName("2. Symbol") val symbol: String,
+    @SerializedName("3. Last Refreshed") val lastRefreshed: String,
+    @SerializedName("4. Interval") val interval: String,
+    @SerializedName("5. Output Size") val outputSize: String,
+    @SerializedName("6. Time Zone") val timeZone: String
 )
 
 data class CompanyResponse(
@@ -30,5 +42,39 @@ data class StockItem(
     @SerializedName("change_amount") val changeAmount: String,
     @SerializedName("change_percentage") val changePercentage: String,
     @SerializedName("volume") val volume: String
+)
+data class CompanyOverview(
+    @SerializedName("Name")
+    val name: String?,
+
+    @SerializedName("Description")
+    val description: String?,
+
+    @SerializedName("Sector")
+    val sector: String?,
+
+    @SerializedName("Industry")
+    val industry: String?,
+
+    @SerializedName("MarketCapitalization")
+    val marketCapitalization: String?,
+
+    @SerializedName("PERatio")
+    val peRatio: String?,
+
+    @SerializedName("DividendYield")
+    val dividendYield: String?,
+
+    @SerializedName("ProfitMargin")
+    val profitMargin: String?,
+
+    @SerializedName("Beta")
+    val beta: String?,
+
+    @SerializedName("52WeekHigh")
+    val week52High: String?,
+
+    @SerializedName("52WeekLow")
+    val week52Low: String?
 )
 

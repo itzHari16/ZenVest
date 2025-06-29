@@ -86,5 +86,18 @@ dependencies {
 // Gson converter
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+//    //vico charts
+////    implementation("com.patrykandpatrick.vico:compose:2.1.3")
+////    implementation("com.patrykandpatrick.vico:core:2.1.3")
+//    implementation("com.patrykandpatrick.vico:compose:1.13.0") // or latest
+//    implementation("com.patrykandpatrick.vico:core:1.13.0")
+//    implementation("com.patrykandpatrick.vico:views:1.13.0")
+
+    //MPAndroid chart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+
+
+
 
 }

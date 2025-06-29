@@ -56,8 +56,5 @@ fun StockScreen() {
             Text("Error: $it", color = Color.Red)
         }
         Spacer(modifier = Modifier.height(50.dp))
-//        Button(onClick ={
-//            nav
-//        } ) { }
     }
 }

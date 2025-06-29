@@ -1,5 +1,6 @@
 package com.example.zenvest.api
 
+import okhttp3.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -21,4 +22,25 @@ interface StockApi {
         @Query("function") function: String = "TOP_GAINERS_LOSERS",
         @Query("apikey") apiKey: String
     ): retrofit2.Response<TopMoversResponse>
+
+    @GET("query")
+    suspend fun getIntradayData(
+        @Query("function") function: String = "TIME_SERIES_INTRADAY",
+        @Query("symbol") symbol: String,
+        @Query("interval") interval: String = "5min",
+        @Query("apikey") apikey: String,
+        @Query("datatype") datatype: String = "json",
+        @Query("outputsize") outputSize: String? = "compact", // Optional: compact or full
+        @Query("adjusted") adjusted: Boolean? = true, // Optional: true or false
+        @Query("extended_hours") extendedHours: Boolean? = true, // Optional: true or false
+        @Query("month") month: String? = null // Optional: YYYY-MM format
+    ): retrofit2.Response<StockResponse>
+
+    @GET("query")
+    suspend fun getCompanyoverview(
+        @Query("symbol") symbol: String,
+        @Query("function") function: String = "OVERVIEW",
+        @Query("apikey") apiKey: String
+    ): CompanyOverview
+
 }

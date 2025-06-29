@@ -1,5 +1,8 @@
 package com.example.zenvest.api
 
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 class StockRepository {
     private val api = RetrofitInstance.api
     private val apiKey = "53Q7L9RG7J5RCSJV"
@@ -12,5 +15,9 @@ class StockRepository {
 
     suspend fun fetchCompanyName(symbol: String): String {
         return api.getCompanyDetails(symbol, apiKey).name
+    }
+
+    suspend fun fetchCompanyOverview(symbol: String): CompanyOverview {
+        return api.getCompanyoverview(symbol = symbol, apiKey = apiKey)
     }
 }
