@@ -5,7 +5,7 @@ plugins {
     id("kotlin-kapt")
     //id("dagger.hilt.android.plugin")
 }
-
+//val apiKey: String = project.findProperty("Apikey") as String
 android {
     namespace = "com.example.zenvest"
     compileSdk = 36
@@ -18,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+      //  buildConfigField("String", "Apikey", "\"$apiKey\"")
     }
 
     buildTypes {

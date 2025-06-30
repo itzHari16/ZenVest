@@ -22,7 +22,7 @@ open class TopMoversViewModel @Inject constructor() : ViewModel() {
     private var fetchJob: Job? = null
 
     fun fetchTopMovers(apiKey: String) {
-        fetchJob?.cancel() // Cancel any ongoing fetch
+        fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             isLoading = true
             isDummyData = false

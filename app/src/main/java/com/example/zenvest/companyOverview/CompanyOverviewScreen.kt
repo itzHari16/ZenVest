@@ -84,7 +84,12 @@ fun CompanyOverviewScreen(
 ) {
     val overview by companyViewModel.overview.collectAsState()
     val stockPriceState by stockViewModel.latestPrice.collectAsState()
-    var currentPrice by remember { mutableStateOf(stockPrice) }
+    var currentPrice by remember {
+        mutableStateOf(
+            if (stockPrice != "N/A") stockPrice
+            else overview?.price ?: "N/A"
+        )
+    }
     val isInWatchlist by watchlistViewModel.isInWatchlistFlow(symbol)
         .collectAsState(initial = false)
     val scope = rememberCoroutineScope()
@@ -93,8 +98,12 @@ fun CompanyOverviewScreen(
     LaunchedEffect(symbol) {
         companyViewModel.loadCompany(symbol)
         stockViewModel.fetchAllData(symbol)
-        currentPrice =
-            stockPriceState ?: stockPrice.takeIf { it != "N/A" } ?: overview?.price ?: "N/A"
+        currentPrice = when {
+            stockPriceState != null -> stockPriceState!!
+            stockPrice != "N/A" -> stockPrice
+            overview?.price != null -> overview?.price!!
+            else -> "N/A"
+        }
     }
 
     Scaffold(
@@ -197,7 +206,7 @@ fun CompanyOverviewScreen(
                     }
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = "$$currentPrice",
+                            text = if (currentPrice != "N/A") "$$currentPrice" else "Price unavailable",
                             style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp),
                             fontWeight = FontWeight.Bold,
                             color = AppColors.TextPrimary

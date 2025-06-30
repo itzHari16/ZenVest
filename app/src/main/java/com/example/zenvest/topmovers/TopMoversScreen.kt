@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -50,7 +51,6 @@ import com.example.zenvest.api.StockItem
 import com.example.zenvest.components.AppColors
 import com.example.zenvest.components.HorizontalStockSection
 import com.example.zenvest.components.StockCard
-import androidx.compose.ui.graphics.Color as ComposeColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +58,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 fun TopMoversScreen(
     viewModel: TopMoversViewModel = viewModel(),
     onViewAllClick: (String) -> Unit,
-    onStockClick: (String, String, String?) -> Unit,
+    onStockClick: (String, String?, String?) -> Unit,
     onSearchClick: () -> Unit,
     onWatchlistClick: () -> Unit
 ) {
@@ -77,7 +77,6 @@ fun TopMoversScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    // .shadow(8.dp, RoundedCornerShape(bottom = 16.dp, topStart = 0.dp, topEnd = 0.dp))
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(AppColors.GradientStart, AppColors.GradientEnd)
@@ -102,7 +101,7 @@ fun TopMoversScreen(
                             IconButton(onClick = onWatchlistClick)
                             {
                                 Icon(
-                                    imageVector = Icons.Default.Star,
+                                    imageVector = Icons.Default.List,
                                     contentDescription = "watchlist",
                                     tint = AppColors.AccentGreen
                                 )
@@ -110,11 +109,11 @@ fun TopMoversScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent, // Use transparent to let Box background show
+                        containerColor = Color.Transparent,
                         titleContentColor = AppColors.TextPrimary
                     ),
                     modifier = Modifier
-                    // .clip(RoundedCornerShape(bottom = 16.dp, topStart = 0.dp, topEnd = 0.dp))
+
                 )
             }
         }
@@ -192,7 +191,9 @@ fun TopMoversScreen(
                                 title = "Top Gainers",
                                 stocks = state.topGainers ?: emptyList(),
                                 onViewAllClick = { onViewAllClick("gainers") },
-                                onStockClick = onStockClick
+                                onStockClick = { symbol, price, change ->
+                                    onStockClick(symbol, price, change)
+                                }
                             )
                         }
                         item {
@@ -200,7 +201,9 @@ fun TopMoversScreen(
                                 title = "Top Losers",
                                 stocks = state.topLosers ?: emptyList(),
                                 onViewAllClick = { onViewAllClick("losers") },
-                                onStockClick = onStockClick
+                                onStockClick = { symbol, price, change ->
+                                    onStockClick(symbol, price, change)
+                                }
                             )
                         }
                         item {
@@ -208,7 +211,9 @@ fun TopMoversScreen(
                                 title = "Most Active",
                                 stocks = state.mostActive ?: emptyList(),
                                 onViewAllClick = { onViewAllClick("active") },
-                                onStockClick = onStockClick
+                                onStockClick ={ symbol, price, change ->
+                                    onStockClick(symbol, price, change)
+                                }
                             )
                         }
                     }

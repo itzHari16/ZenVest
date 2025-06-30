@@ -1,16 +1,11 @@
 package com.example.zenvest.watchlist
 
 import android.content.Context
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -24,7 +19,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 
-// Data class for WatchlistItem
 @Entity(tableName = "watchlist_items")
 data class WatchlistItem(
     @PrimaryKey val symbol: String,
@@ -33,7 +27,6 @@ data class WatchlistItem(
     val changePercentage: String?
 )
 
-// DAO for watchlist operations
 @Dao
 interface WatchlistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -49,7 +42,7 @@ interface WatchlistDao {
     fun isInWatchlistFlow(symbol: String): Flow<Boolean>
 }
 
-// Repository for watchlist operations
+
 class WatchlistRepository(private val dao: WatchlistDao) {
     val watchlist: Flow<List<WatchlistItem>> = dao.getWatchlist()
 
@@ -66,7 +59,6 @@ class WatchlistRepository(private val dao: WatchlistDao) {
     }
 }
 
-// ViewModel for watchlist
 class WatchlistViewModel(private val repository: WatchlistRepository) : ViewModel() {
     val watchlist: Flow<List<WatchlistItem>> = repository.watchlist
 
@@ -89,7 +81,6 @@ class WatchlistViewModel(private val repository: WatchlistRepository) : ViewMode
     }
 }
 
-// Room database
 @Database(
     entities = [WatchlistItem::class],
     version = 1,
@@ -118,7 +109,6 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
-// ViewModel Factory for dependency injection
 class WatchlistViewModelFactory(private val repository: WatchlistRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(WatchlistViewModel::class.java)) {
