@@ -3,139 +3,164 @@ package com.example.zenvest.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.zenvest.R
 
+// Color Palette
+object AppColors {
+    val Background = Color(0xFF0B0C1C)
+    val CardBackground = Color(0xFF1C2526)
+    val AccentGreen = Color(0xFF00FF66)
+    val AccentRed = Color(0xFFFF3D3D)
+    val AccentPurple = Color(0xFF7C3AED)
+    val TextPrimary = Color.White
+    val TextSecondary = Color(0xFFBBBBBB)
+    val TextTertiary = Color(0xFF6B7280)
+    val GradientStart = Color(0xFF4A2E8A)
+    val GradientEnd = Color(0xFF1C2526)
+    val Divider = Color(0xFF3B3B5B)
+}
 
 @Composable
 fun StockCard(
     name: String,
     price: String,
-    change : String,
+    change: String,
     changeIsPositive: Boolean,
-    onClick: ()-> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val changeColor = if (changeIsPositive) AppColors.AccentGreen else AppColors.AccentRed
+    val initial = name.firstOrNull()?.toString() ?: "S"
 
-    val changeColor = if (changeIsPositive) Color(0xFF00FF66) else Color.Red
     Box(
-        modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 12.dp)
-            .width(180.dp)
-            .height(140.dp)
-            .border(
-                width = 2.dp,
-                color = Color.White,
-                shape = RoundedCornerShape(18.dp)
+        modifier = modifier
+            .padding(8.dp)
+            .width(200.dp)
+            .height(160.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        AppColors.GradientStart.copy(alpha = 0.9f),
+                        AppColors.GradientEnd.copy(alpha = 0.8f)
+                    )
+                )
             )
-            .clip(RoundedCornerShape(18.dp))
-            //.background(Color.Transparent) // Card background
-            .background(Color.Black)
-            .padding(12.dp)
-            .clickable{onClick()}
+            //.border(1.dp, AppColors.Divider.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
+            //.shadow(10.dp, RoundedCornerShape(10.dp), clip = false)
+            .clickable { onClick() }
+            .padding(16.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxSize()
         ) {
+            // Top Row with Initial and Name
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            brush = Brush.radialGradient(
+                                listOf(AppColors.AccentPurple, AppColors.AccentGreen)
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = name,
+                        text = initial,
                         style = TextStyle(
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.W300
+                            color = AppColors.TextPrimary,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 22.sp
                         )
                     )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 17.sp, // smaller font for dollar symbol
-                                    fontWeight = FontWeight.Normal
-                                )
-                            ) {
-                                append("$")
-                            }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 30.sp, // larger font for price
-                                    fontWeight = FontWeight.W500
-                                )
-                            ) {
-                                val formattedPrice = price.toDoubleOrNull()?.let { String.format("%.3f", it) } ?: price
-                                append(formattedPrice) // assuming price is a variable of type String or can be converted to one
-                            }
-                        },
-                        style = TextStyle(
-                            color = Color.White
-                        ))
-
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.apple_icon), // Add this drawable
-                    contentDescription = "Apple Logo",
-                    modifier = Modifier.size(70.dp),
-                    tint = Color.Gray
-                )
 
+                Text(
+                    text = name,
+                    style = TextStyle(
+                        color = AppColors.TextPrimary,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
-            Text(
-                text = change,
-                style = TextStyle(
-                    color = changeColor, // Bright green
-                    fontSize = 15.sp,
+
+            // Price Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "$${price.toDoubleOrNull()?.let { String.format("%.2f", it) } ?: price}",
+                    style = TextStyle(
+                        color = AppColors.TextPrimary,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Black
+                    )
                 )
-            )
+            }
 
+            // Change Badge
+            Box(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clip(RoundedCornerShape(50))
+                    .background(changeColor.copy(alpha = 0.15f))
+                    .padding(horizontal = 10.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = change,
+                    style = TextStyle(
+                        color = changeColor,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
         }
-
-
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun stockui(){
-    StockCard(
-        name = "hari",
-        price = "0.132",
-        change = "5.77",
-        changeIsPositive = true,
-        onClick = TODO(),
-    )
+fun StockCardPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.Background)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        StockCard(
+            name = "TSLA",
+            price = "251.76",
+            change = "-5.12 (-2.03%)",
+            changeIsPositive = false,
+            onClick = {}
+        )
+    }
 }
+

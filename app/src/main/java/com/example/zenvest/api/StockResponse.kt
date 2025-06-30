@@ -5,7 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class StockResponse(
     @SerializedName("Meta Data") val metaData: MetaData,
-    @SerializedName("Time Series (5min)") val timeSeries: Map<String, StockData>
+    @SerializedName("Time Series (5min)") val timeSeries5min: Map<String, StockData>? = null,
+    @SerializedName("Time Series (Daily)") val timeSeriesDaily: Map<String, StockData>? = null,
+    @SerializedName("Weekly Time Series") val timeSeriesWeekly: Map<String, StockData>? = null,
+    @SerializedName("Monthly Time Series") val timeSeriesMonthly: Map<String, StockData>? = null
 )
 
 data class StockData(
@@ -41,7 +44,7 @@ data class StockItem(
     @SerializedName("price") val price: String,
     @SerializedName("change_amount") val changeAmount: String,
     @SerializedName("change_percentage") val changePercentage: String,
-    @SerializedName("volume") val volume: String
+    //@SerializedName("volume") val volume: String
 )
 data class CompanyOverview(
     @SerializedName("Name")
@@ -62,6 +65,9 @@ data class CompanyOverview(
     @SerializedName("PERatio")
     val peRatio: String?,
 
+    @SerializedName("PEGRatio")
+    val pegRatio: String?, // Added PEGRatio
+
     @SerializedName("DividendYield")
     val dividendYield: String?,
 
@@ -75,6 +81,25 @@ data class CompanyOverview(
     val week52High: String?,
 
     @SerializedName("52WeekLow")
-    val week52Low: String?
+    val week52Low: String?,
+
+    @SerializedName("price")
+    val price: String,
+)
+
+data class SearchResponse(
+    @SerializedName("bestMatches") val bestMatches: List<SymbolMatch>? = null
+)
+
+data class SymbolMatch(
+    @SerializedName("1. symbol") val symbol: String,
+    @SerializedName("2. name") val name: String,
+    @SerializedName("3. type") val type: String,
+    @SerializedName("4. region") val region: String,
+    @SerializedName("5. marketOpen") val marketOpen: String,
+    @SerializedName("6. marketClose") val marketClose: String,
+    @SerializedName("7. timezone") val timezone: String,
+    @SerializedName("8. currency") val currency: String,
+    @SerializedName("9. matchScore") val matchScore: String
 )
 

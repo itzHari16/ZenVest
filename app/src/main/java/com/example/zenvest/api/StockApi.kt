@@ -1,6 +1,6 @@
 package com.example.zenvest.api
 
-import okhttp3.Response
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -24,17 +24,30 @@ interface StockApi {
     ): retrofit2.Response<TopMoversResponse>
 
     @GET("query")
-    suspend fun getIntradayData(
-        @Query("function") function: String = "TIME_SERIES_INTRADAY",
+    suspend fun getDailyData(
+        @Query("function") function: String = "TIME_SERIES_DAILY",
         @Query("symbol") symbol: String,
-        @Query("interval") interval: String = "5min",
+        @Query("outputsize") outputSize: String? = "compact",
         @Query("apikey") apikey: String,
-        @Query("datatype") datatype: String = "json",
-        @Query("outputsize") outputSize: String? = "compact", // Optional: compact or full
-        @Query("adjusted") adjusted: Boolean? = true, // Optional: true or false
-        @Query("extended_hours") extendedHours: Boolean? = true, // Optional: true or false
-        @Query("month") month: String? = null // Optional: YYYY-MM format
-    ): retrofit2.Response<StockResponse>
+        @Query("datatype") datatype: String = "json"
+    ): Response<StockResponse>
+
+
+    @GET("query")
+    suspend fun getWeeklyData(
+        @Query("function") function: String = "TIME_SERIES_WEEKLY",
+        @Query("symbol") symbol: String,
+        @Query("apikey") apikey: String,
+        @Query("datatype") datatype: String = "json"
+    ): Response<StockResponse>
+
+    @GET("query")
+    suspend fun getMonthlyData(
+        @Query("function") function: String = "TIME_SERIES_MONTHLY",
+        @Query("symbol") symbol: String,
+        @Query("apikey") apikey: String,
+        @Query("datatype") datatype: String = "json"
+    ): Response<StockResponse>
 
     @GET("query")
     suspend fun getCompanyoverview(
@@ -43,4 +56,11 @@ interface StockApi {
         @Query("apikey") apiKey: String
     ): CompanyOverview
 
+    @GET("query")
+    suspend fun searchSymbols(
+        @Query("function") function: String = "SYMBOL_SEARCH",
+        @Query("keywords") keywords: String,
+        @Query("apikey") apikey: String,
+        @Query("datatype") datatype: String = "json"
+    ): Response<SearchResponse>
 }

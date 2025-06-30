@@ -7,17 +7,21 @@ plugins {
 }
 
 buildscript {
+    var kotlin_version = "1.9.24"
     repositories {
         google()
         mavenCentral()
-        maven{
-             url = uri( "https://jitpack.io")
-        }
+//        maven{
+//             url = uri( "https://jitpack.io")
+//        }
     }
 
     dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
+       // classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
+        classpath ("com.android.tools.build:gradle:8.5.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
+
 
 

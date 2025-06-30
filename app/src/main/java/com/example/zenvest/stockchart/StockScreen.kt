@@ -1,77 +1,443 @@
-package com.example.stockapp.ui
+//package com.example.stockapp.ui
+//
+//import android.graphics.Color
+//import android.graphics.Paint
+//import androidx.compose.foundation.background
+//import androidx.compose.foundation.layout.*
+//import androidx.compose.material3.*
+//import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+//import androidx.compose.runtime.*
+//import androidx.compose.ui.Alignment
+//import androidx.compose.ui.Modifier
+//import androidx.compose.ui.text.style.TextAlign
+//import androidx.compose.ui.unit.dp
+//import androidx.compose.ui.viewinterop.AndroidView
+//import com.example.zenvest.api.MetaData
+//import com.example.zenvest.api.StockData
+//import com.example.zenvest.stockchart.StockViewModel
+//import com.github.mikephil.charting.charts.CandleStickChart
+//import com.github.mikephil.charting.data.CandleData
+//import com.github.mikephil.charting.data.CandleDataSet
+//import com.github.mikephil.charting.data.CandleEntry
+//import com.google.accompanist.pager.ExperimentalPagerApi
+//import com.google.accompanist.pager.HorizontalPager
+//import com.google.accompanist.pager.rememberPagerState
+//import androidx.compose.ui.graphics.Color as ComposeColor
+//
+//@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+//@Composable
+//fun StockScreenContent(
+//    symbol: String,
+//    viewModel: StockViewModel,
+//    modifier: Modifier = Modifier
+//) {
+//    var selectedTabIndex by remember { mutableStateOf(0) }
+//    val pagerState = rememberPagerState(initialPage = selectedTabIndex)
+//    val dailyData by viewModel.dailyData.collectAsState()
+//    val weeklyData by viewModel.weeklyData.collectAsState()
+//    val monthlyData by viewModel.monthlyData.collectAsState()
+//    val isLoading by viewModel.isLoading.collectAsState()
+//    val error by viewModel.error.collectAsState()
+//    val metaData by viewModel.metaData.collectAsState()
+//
+//    LaunchedEffect(selectedTabIndex) {
+//        pagerState.animateScrollToPage(selectedTabIndex)
+//        when (selectedTabIndex) {
+//            0 -> viewModel.fetchDailyData(symbol)
+//            1 -> viewModel.fetchWeeklyData(symbol)
+//            2 -> viewModel.fetchMonthlyData(symbol)
+//        }
+//    }
+//
+//    LaunchedEffect(pagerState.currentPage) {
+//        selectedTabIndex = pagerState.currentPage
+//    }
+//
+//    Column(
+//        modifier = modifier,
+//        verticalArrangement = Arrangement.spacedBy(16.dp),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        TabRow(
+//            selectedTabIndex = selectedTabIndex,
+//            containerColor = ComposeColor(0xFF1C2526),
+//            contentColor = ComposeColor(0xFF00FF66),
+//            indicator = { tabPositions ->
+//                TabRowDefaults.Indicator(
+//                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+//                    color = ComposeColor(0xFF00FF66)
+//                )
+//            }
+//        ) {
+//            Tab(
+//                selected = selectedTabIndex == 0,
+//                onClick = { selectedTabIndex = 0 },
+//                text = { Text("Daily", color = if (selectedTabIndex == 0) ComposeColor(0xFF00FF66) else ComposeColor.White) }
+//            )
+//            Tab(
+//                selected = selectedTabIndex == 1,
+//                onClick = { selectedTabIndex = 1 },
+//                text = { Text("Weekly", color = if (selectedTabIndex == 1) ComposeColor(0xFF00FF66) else ComposeColor.White) }
+//            )
+//            Tab(
+//                selected = selectedTabIndex == 2,
+//                onClick = { selectedTabIndex = 2 },
+//                text = { Text("Monthly", color = if (selectedTabIndex == 2) ComposeColor(0xFF00FF66) else ComposeColor.White) }
+//            )
+//        }
+//
+//        HorizontalPager(
+//            count = 3,
+//            state = pagerState,
+//            modifier = Modifier.fillMaxWidth()
+//        ) { page ->
+//            ChartContent(
+//                stockData = when (page) {
+//                    0 -> dailyData
+//                    1 -> weeklyData
+//                    2 -> monthlyData
+//                    else -> emptyList()
+//                },
+//                title = when (page) {
+//                    0 -> "Daily Chart"
+//                    1 -> "Weekly Chart"
+//                    2 -> "Monthly Chart"
+//                    else -> "Chart"
+//                },
+//                isLoading = isLoading,
+//                error = error
+//            )
+//        }
+//
+//    }
+//}
+//
+//@Composable
+//fun ChartContent(
+//    stockData: List<StockData>,
+//    title: String,
+//    isLoading: Boolean,
+//    error: String?
+//) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 16.dp),
+//        elevation = CardDefaults.cardElevation(8.dp),
+//        colors = CardDefaults.cardColors(containerColor = ComposeColor(0xFF1C2526))
+//    ) {
+//        Column(
+//            modifier = Modifier.padding(16.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Text(
+//                text = title,
+//                style = MaterialTheme.typography.headlineMedium.copy(color = ComposeColor.White),
+//                modifier = Modifier.padding(bottom = 12.dp)
+//            )
+//            when {
+//                isLoading -> CircularProgressIndicator(color = ComposeColor(0xFF00FF66))
+//                error != null -> Text(
+//                    text = error,
+//                    color = ComposeColor(0xFFFF3D3D),
+//                    textAlign = TextAlign.Center,
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+//                )
+//                stockData.isNotEmpty() -> CandlestickChart(
+//                    stockData = stockData,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(300.dp)
+//                )
+//                else -> Text(
+//                    text = "No data available",
+//                    color = ComposeColor.White,
+//                    textAlign = TextAlign.Center,
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+//                )
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun CandlestickChart(
+//    stockData: List<StockData>,
+//    modifier: Modifier = Modifier
+//) {
+//    AndroidView(
+//        modifier = modifier,
+//        factory = { context ->
+//            CandleStickChart(context).apply {
+//                setBackgroundColor(Color.parseColor("#0B0C1C"))
+//                description.isEnabled = false
+//                setDrawGridBackground(false)
+//
+//                xAxis.apply {
+//                    setDrawGridLines(false)
+//                    setDrawLabels(false)
+//                    position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+//                    textColor = Color.WHITE
+//                }
+//
+//                axisLeft.apply {
+//                    setDrawGridLines(true)
+//                    setLabelCount(5, true)
+//                    setDrawLabels(true)
+//                    setDrawAxisLine(true)
+//                    textColor = Color.WHITE
+//                    gridColor = Color.parseColor("#1C2526")
+//                    textSize = 10f
+//                }
+//
+//                axisRight.isEnabled = false
+//
+//                legend.isEnabled = true
+//                setScaleEnabled(true)
+//                setPinchZoom(true)
+//            }
+//        },
+//        update = { chart ->
+//            val entries = stockData.mapIndexed { index, data ->
+//                CandleEntry(
+//                    index.toFloat(),
+//                    data.high.toFloatOrNull() ?: 0f,
+//                    data.low.toFloatOrNull() ?: 0f,
+//                    data.open.toFloatOrNull() ?: 0f,
+//                    data.close.toFloatOrNull() ?: 0f
+//                )
+//            }
+//
+//            chart.axisLeft.apply {
+//                val prices = entries.flatMap { listOf(it.high, it.low, it.open, it.close) }
+//                    .filterNot { it.isNaN() }
+//                if (prices.isNotEmpty()) {
+//                    axisMinimum = prices.min() * 0.95f
+//                    axisMaximum = prices.max() * 1.05f
+//                } else {
+//                    axisMinimum = 0f
+//                    axisMaximum = 100f
+//                }
+//            }
+//
+//            val dataSet = CandleDataSet(entries, "Stock Data").apply {
+//                setDrawIcons(false)
+//                shadowColor = Color.parseColor("#404040")
+//                shadowWidth = 0.7f
+//                decreasingColor = Color.parseColor("#FF3D3D")
+//                decreasingPaintStyle = Paint.Style.FILL
+//                increasingColor = Color.parseColor("#00FF66")
+//                increasingPaintStyle = Paint.Style.FILL
+//                neutralColor = Color.parseColor("#0000FF")
+//                setDrawValues(false)
+//            }
+//
+//            chart.data = CandleData(dataSet)
+//            chart.notifyDataSetChanged()
+//            chart.invalidate()
+//        }
+//    )
+//}
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.zenvest.api.RetrofitInstance
-import com.example.zenvest.api.StockData
-import com.example.zenvest.api.StockRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+
+
+package com.example.zenvest.ui
+
 import android.graphics.Color
 import android.graphics.Paint
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.zenvest.api.StockData
+import com.example.zenvest.stockchart.StockViewModel
 import com.github.mikephil.charting.charts.CandleStickChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.CandleData
 import com.github.mikephil.charting.data.CandleDataSet
 import com.github.mikephil.charting.data.CandleEntry
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.ui.graphics.Color as ComposeColor
 
-class StockViewModel : ViewModel() {
-    private val _stockData = MutableStateFlow<List<StockData>>(emptyList())
-    val stockData: StateFlow<List<StockData>> = _stockData
+// Color Palette
+object AppColors {
+    val Background = ComposeColor(0xFF0F0F1F)
+    val CardBackground = ComposeColor(0xFF1C1C2E)
+    val AccentGreen = ComposeColor(0xFF00FF66)
+    val AccentRed = ComposeColor(0xFFFF3D3D)
+    val AccentPurple = ComposeColor(0xFF7C3AED)
+    val TextPrimary = ComposeColor.White
+    val TextSecondary = ComposeColor(0xFFBBBBBB)
+    val TextTertiary = ComposeColor(0xFF6B7280)
+    val ChartBackground = ComposeColor(0xFF0B0C1C)
+    val Divider = ComposeColor(0xFF3B3B5B)
+}
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@Composable
+fun StockScreenContent(
+    symbol: String,
+    viewModel: StockViewModel,
+    modifier: Modifier = Modifier
+) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState(initialPage = selectedTabIndex)
+    val dailyData by viewModel.dailyData.collectAsState()
+    val weeklyData by viewModel.weeklyData.collectAsState()
+    val monthlyData by viewModel.monthlyData.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    LaunchedEffect(selectedTabIndex) {
+        pagerState.animateScrollToPage(selectedTabIndex)
+        when (selectedTabIndex) {
+            0 -> viewModel.fetchDailyData(symbol)
+            1 -> viewModel.fetchWeeklyData(symbol)
+            2 -> viewModel.fetchMonthlyData(symbol)
+        }
+    }
 
-    val apikey = "53Q7L9RG7J5RCSJV"
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTabIndex = pagerState.currentPage
+    }
 
-    fun fetchStockData(symbol: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                val response = RetrofitInstance.api.getIntradayData(
-                    symbol = symbol,
-                    apikey = apikey,
-                    interval = "5min",
-                    outputSize = "compact"
+    Column(
+        modifier = modifier.background(AppColors.Background),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            containerColor = AppColors.CardBackground,
+            contentColor = AppColors.AccentGreen,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                        .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)),
+                    color = AppColors.AccentGreen,
+                    height = 4.dp
                 )
-                if (response.isSuccessful) {
-                    response.body()?.let { stockResponse ->
-                        _stockData.value = stockResponse.timeSeries.entries
-                            .sortedBy { it.key } // Sort by timestamp
-                            .map { it.value }
-                    } ?: run {
-                        _error.value = "No data received from the server"
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            listOf("Daily", "Weekly", "Monthly").forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    text = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = if (selectedTabIndex == index) AppColors.AccentGreen else AppColors.TextSecondary,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
-                } else {
-                    _error.value = "API error: ${response.code()} - ${response.message()}"
-                }
-            } catch (e: Exception) {
-                _error.value = "Network error: ${e.message}"
-            } finally {
-                _isLoading.value = false
+                )
             }
+        }
+
+        HorizontalPager(
+            count = 3,
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+            ChartContent(
+                stockData = when (page) {
+                    0 -> dailyData
+                    1 -> weeklyData
+                    2 -> monthlyData
+                    else -> emptyList()
+                },
+                isLoading = isLoading,
+                error = error,
+            )
         }
     }
 }
 
-
+@Composable
+fun ChartContent(
+    stockData: List<StockData>,
+    isLoading: Boolean,
+    error: String?
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(12.dp)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.CardBackground)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            when {
+                isLoading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = AppColors.AccentPurple,
+                            strokeWidth = 4.dp
+                        )
+                    }
+                }
+                error != null -> Text(
+                    text = error,
+                    color = AppColors.AccentRed,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(AppColors.Background, RoundedCornerShape(8.dp))
+                )
+                stockData.isNotEmpty() -> CandlestickChart(
+                    stockData = stockData,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .border(1.dp, AppColors.Divider, RoundedCornerShape(8.dp))
+                )
+                else -> Text(
+                    text = "No data available",
+                    color = AppColors.TextSecondary,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun CandlestickChart(
@@ -82,40 +448,34 @@ fun CandlestickChart(
         modifier = modifier,
         factory = { context ->
             CandleStickChart(context).apply {
-                // General chart settings
-                setBackgroundColor(Color.WHITE)
+                setBackgroundColor(Color.parseColor("#0B0C1C"))
                 description.isEnabled = false
                 setDrawGridBackground(false)
 
-                // X-axis configuration
                 xAxis.apply {
                     setDrawGridLines(false)
-                    setDrawLabels(false) // Hide timestamps for simplicity
-                    position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+                    setDrawLabels(false)
+                    position = XAxis.XAxisPosition.BOTTOM
+                    textColor = Color.WHITE
                 }
 
-                // Left Y-axis configuration
                 axisLeft.apply {
-                    setDrawGridLines(true) // Enable horizontal grid lines
-                    setLabelCount(5, true) // Force 5 labels
-                    setDrawLabels(true) // Ensure labels are visible
-                    setDrawAxisLine(true) // Draw the axis line
-                    textColor = Color.BLACK // Set label text color
-                    gridColor = Color.LTGRAY // Set grid line color
-                    textSize = 10f // Set label text size
+                    setDrawGridLines(true)
+                    setLabelCount(5, true)
+                    setDrawLabels(true)
+                    setDrawAxisLine(true)
+                    textColor = Color.WHITE
+                    gridColor = Color.parseColor("#1C2526")
+                    textSize = 12f
                 }
 
-                // Right Y-axis configuration (disable to avoid duplication)
                 axisRight.isEnabled = false
-
-                // Legend and interaction settings
                 legend.isEnabled = true
                 setScaleEnabled(true)
                 setPinchZoom(true)
             }
         },
         update = { chart ->
-            // Convert stock data to CandleEntry
             val entries = stockData.mapIndexed { index, data ->
                 CandleEntry(
                     index.toFloat(),
@@ -125,76 +485,34 @@ fun CandlestickChart(
                     data.close.toFloatOrNull() ?: 0f
                 )
             }
-            // Update Y-axis range based on data
+
             chart.axisLeft.apply {
                 val prices = entries.flatMap { listOf(it.high, it.low, it.open, it.close) }
                     .filterNot { it.isNaN() }
                 if (prices.isNotEmpty()) {
-                    axisMinimum = prices.min() * 0.95f // 5% below min for padding
-                    axisMaximum = prices.max() * 1.05f // 5% above max for padding
+                    axisMinimum = prices.min() * 0.95f
+                    axisMaximum = prices.max() * 1.05f
                 } else {
-                    // Fallback range if no valid data
                     axisMinimum = 0f
                     axisMaximum = 100f
                 }
             }
-            // Create dataset
+
             val dataSet = CandleDataSet(entries, "Stock Data").apply {
                 setDrawIcons(false)
-                shadowColor = Color.DKGRAY
+                shadowColor = Color.parseColor("#404040")
                 shadowWidth = 0.7f
-                decreasingColor = Color.RED
+                decreasingColor = Color.parseColor("#FF3D3D")
                 decreasingPaintStyle = Paint.Style.FILL
-                increasingColor = Color.GREEN
+                increasingColor = Color.parseColor("#00FF66")
                 increasingPaintStyle = Paint.Style.FILL
-                neutralColor = Color.BLUE
+                neutralColor = Color.parseColor("#7C3AED")
                 setDrawValues(false)
             }
 
-            // Set data to chart
             chart.data = CandleData(dataSet)
-            chart.notifyDataSetChanged() // Notify chart of data changes
-            chart.invalidate() // Refresh the chart
+            chart.notifyDataSetChanged()
+            chart.invalidate()
         }
     )
-}
-
-
-
-
-@Composable
-fun StockGraph(
-    symbol: String = "IBM",
-    viewModel: StockViewModel = viewModel()
-) {
-    val stockData by viewModel.stockData.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val error by viewModel.error.collectAsState()
-
-    LaunchedEffect(symbol) {
-        viewModel.fetchStockData(symbol = symbol)
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        when {
-            isLoading -> CircularProgressIndicator()
-            error != null -> Text(
-                text = error ?: "Unknown error",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxSize()
-            )
-            stockData.isNotEmpty() -> CandlestickChart(
-                stockData = stockData,
-                modifier = Modifier.fillMaxSize()
-            )
-            else -> Text(
-                text = "No data available",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-    }
 }

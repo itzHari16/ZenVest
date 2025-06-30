@@ -9,15 +9,17 @@ class StockRepository {
 
     suspend fun fetchStockPrice(symbol: String): Double {
         val response = api.getStockPrice(symbol, apiKey)
-        val latestTime = response.timeSeries.keys.first()
-        return response.timeSeries[latestTime]?.open?.toDouble() ?: 0.0
+        val latestTime = response.timeSeries5min?.keys?.first()
+        return response.timeSeries5min?.get(latestTime)?.open?.toDouble() ?: 0.0
     }
 
     suspend fun fetchCompanyName(symbol: String): String {
         return api.getCompanyDetails(symbol, apiKey).name
     }
 
-    suspend fun fetchCompanyOverview(symbol: String): CompanyOverview {
+    suspend fun getCompanyOverview(symbol: String): CompanyOverview {
         return api.getCompanyoverview(symbol = symbol, apiKey = apiKey)
     }
+
+
 }

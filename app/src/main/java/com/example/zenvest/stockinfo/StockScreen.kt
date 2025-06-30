@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
 @Composable
-fun StockScreen() {
+fun StockPriceScreen() {
     val viewModel: StockViewModel = viewModel()
     val stockPrice by viewModel.stockPrice.collectAsState()
     val companyName by viewModel.companyName.collectAsState()

@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import com.example.stockapp.ui.StockGraph
 import com.example.zenvest.ui.theme.ZenVestTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +17,8 @@ class MainActivity : ComponentActivity() {
             ZenVestTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     NavGraph()
-                    //StockGraph()
+                   // StockScreen(symbol = "IBM", modifier = Modifier.fillMaxSize())
+
                 }
             }
         }
