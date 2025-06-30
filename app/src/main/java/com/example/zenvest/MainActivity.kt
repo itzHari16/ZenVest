@@ -17,8 +17,6 @@ class MainActivity : ComponentActivity() {
             ZenVestTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     NavGraph()
-                   // StockScreen(symbol = "IBM", modifier = Modifier.fillMaxSize())
-
                 }
             }
         }

@@ -47,23 +47,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.zenvest.api.StockItem
+import com.example.zenvest.components.AppColors
+import com.example.zenvest.components.HorizontalStockSection
 import com.example.zenvest.components.StockCard
 import androidx.compose.ui.graphics.Color as ComposeColor
 
-
-object AppColors {
-    val Background = ComposeColor(0xFF0B0C1C)
-    val CardBackground = ComposeColor(0xFF1C2526)
-    val AccentGreen = ComposeColor(0xFF00FF66)
-    val AccentRed = ComposeColor(0xFFFF3D3D)
-    val AccentPurple = ComposeColor(0xFF7C3AED)
-    val TextPrimary = ComposeColor.White
-    val TextSecondary = ComposeColor(0xFFBBBBBB)
-    val TextTertiary = ComposeColor(0xFF6B7280)
-    val GradientStart = ComposeColor(0xFF4A2E8A)
-    val GradientEnd = ComposeColor(0xFF1C2526)
-    val Divider = ComposeColor(0xFF3B3B5B)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -329,81 +317,3 @@ fun FullStockListScreen(
     }
 }
 
-@Composable
-fun HorizontalStockSection(
-    title: String,
-    stocks: List<StockItem>,
-    onViewAllClick: () -> Unit,
-    onStockClick: (String, String, String?) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(tween(300))
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = AppColors.TextPrimary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "View All",
-                color = AppColors.AccentGreen,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(AppColors.AccentPurple, AppColors.AccentGreen)
-                        )
-                    )
-                    .clickable { onViewAllClick() }
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            )
-        }
-        if (stocks.isEmpty()) {
-            Text(
-                text = "No $title available",
-                color = AppColors.TextSecondary,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(AppColors.CardBackground)
-                    .padding(12.dp)
-            )
-        } else {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(stocks.take(4)) { stock ->
-                    StockCard(
-                        name = stock.ticker,
-                        price = stock.price,
-                        change = "${stock.changeAmount} (${stock.changePercentage})",
-                        changeIsPositive = stock.changeAmount.toDoubleOrNull()?.let { it >= 0 }
-                            ?: true,
-                        onClick = {
-                            onStockClick(
-                                stock.ticker,
-                                stock.price,
-                                stock.changePercentage
-                            )
-                        }
-                    )
-                }
-            }
-        }
-    }
-}

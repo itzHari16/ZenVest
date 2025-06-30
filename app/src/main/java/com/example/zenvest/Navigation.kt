@@ -1,6 +1,7 @@
 package com.example.zenvest
 
 
+import WatchlistScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,14 +12,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.zenvest.companyOverview.CompanyOverviewScreen
-import com.example.zenvest.stockinfo.StockPriceScreen
 import com.example.zenvest.topmovers.FullStockListScreen
 import com.example.zenvest.topmovers.TopMoversScreen
 import com.example.zenvest.topmovers.TopMoversViewModel
 import com.example.zenvest.ui.SearchScreen
 import com.example.zenvest.watchlist.AppDatabase
 import com.example.zenvest.watchlist.WatchlistRepository
-import com.example.zenvest.watchlist.WatchlistScreen
+import com.example.zenvest.watchlist.WatchlistViewModel
 import com.example.zenvest.watchlist.WatchlistViewModelFactory
 
 object Routes {
@@ -46,8 +46,8 @@ fun NavGraph(
                 },
                 onStockClick = { symbol, price, changePercentage ->
                     navController.navigate(
-                        "${Routes.COMPANY_OVERVIEW.replace("{symbol}", symbol)}" +
-                                "?price=${price ?: "N/A"}" +
+                        Routes.COMPANY_OVERVIEW.replace("{symbol}", symbol) +
+                                "?price=${price}" +
                                 "&changePercentage=${changePercentage ?: "N/A"}"
                     )
                 },
@@ -73,7 +73,7 @@ fun NavGraph(
                 onBack = { navController.popBackStack() },
                 onStockClick = { symbol, price, changePercentage ->
                     navController.navigate(
-                        "${Routes.COMPANY_OVERVIEW.replace("{symbol}", symbol)}" +
+                        Routes.COMPANY_OVERVIEW.replace("{symbol}", symbol) +
                                 "?price=${price ?: "N/A"}" +
                                 "&changePercentage=${changePercentage ?: "N/A"}"
                     )
@@ -102,7 +102,7 @@ fun NavGraph(
             val changePercentage = backStackEntry.arguments?.getString("changePercentage") ?: "N/A"
             CompanyOverviewScreen(
                 symbol = symbol,
-                stockPrice = price, // Renamed for consistency
+                stockPrice = price,
                 changePercentage = changePercentage,
                 onBack = { navController.popBackStack() }
             )
@@ -110,33 +110,26 @@ fun NavGraph(
 
         composable(Routes.SEARCH) {
             SearchScreen(
-                onBack = { navController.popBackStack() },
-                onStockClick = { ticker, _ -> // Ignore name for now
-                    navController.navigate("${Routes.STOCK_DETAIL.replace("{ticker}", ticker)}")
-                }
+                navController = navController,
+                onBack = { navController.popBackStack() }
             )
         }
 
-//        composable(
-//            route = Routes.STOCK_DETAIL,
-//            arguments = listOf(navArgument("ticker") { type = NavType.StringType })
-//        ) { backStackEntry ->
-//            val ticker = backStackEntry.arguments?.getString("ticker") ?: ""
-//            StockPriceScreen(
-//                symbol = ticker,
-//                onBack = { navController.popBackStack() }
-//            )
-//        }
 
         composable(Routes.WATCHLIST) {
-            WatchlistScreen(
-                navController = navController,
-                viewModel = viewModel(
-                    factory = WatchlistViewModelFactory(
-                        WatchlistRepository(AppDatabase.getDatabase(LocalContext.current).watchlistDao())
-                    )
+            val context = LocalContext.current
+            val watchlistViewModel: WatchlistViewModel = viewModel(
+                factory = WatchlistViewModelFactory(
+                    WatchlistRepository(AppDatabase.getDatabase(context).watchlistDao())
                 )
             )
+
+            WatchlistScreen(
+                navController = navController,
+                viewModel = watchlistViewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
+
     }
 }

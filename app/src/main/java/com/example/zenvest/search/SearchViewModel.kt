@@ -3,12 +3,10 @@ package com.example.zenvest.stockchart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zenvest.api.RetrofitInstance
-import com.example.zenvest.api.SearchResponse
 import com.example.zenvest.api.SymbolMatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 class SearchViewModel : ViewModel() {
     private val apiKey: String = "53Q7L9RG7J5RCSJV"

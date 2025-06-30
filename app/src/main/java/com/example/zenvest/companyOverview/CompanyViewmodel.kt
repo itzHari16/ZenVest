@@ -36,19 +36,12 @@ class CompanyViewmodel : ViewModel() {
                     price = response.price ?: "N/A",
                 )
             } catch (e: Exception) {
-                // Set dummy data on failure
-               // _overview.value = dummyCompanyOverview
-                // Optionally, log the error for debugging
-                // Log.e("CompanyViewModel", "Failed to fetch company overview: ${e.message}")
-                
+
             }
         }
     }
 }
 
-// UI Model (same as in your UI code for consistency)
-// UI Model
-// UI Model (same as in your UI code for consistency)
 data class UiCompanyOverview(
     val name: String?,
     val description: String?,
@@ -65,18 +58,3 @@ data class UiCompanyOverview(
     val price: String?,
 )
 
-//public val dummyCompanyOverview = UiCompanyOverview(
-//    name = "TechCorp Inc.",
-//    description = "TechCorp Inc. is a leading technology company specializing in innovative software solutions and cloud computing services. Founded in 2005, the company has grown to become a major player in the tech industry, offering a wide range of products including enterprise software, AI-powered analytics, and cybersecurity solutions. With a global presence in over 50 countries, TechCorp is committed to driving digital transformation for businesses worldwide.",
-//    sector = "Technology",
-//    industry = "Software",
-//    marketCapitalization = "$1.2T",
-//    peRatio = "28.5",
-//    pegRatio = "1.65", // Added dummy PEGRatio
-//    dividendYield = "1.8%",
-//    profitMargin = "22.3%",
-//    beta = "1.15",
-//    week52High = "145.50",
-//    week52Low = "95.20",
-//    price = "120.75",
-//)
